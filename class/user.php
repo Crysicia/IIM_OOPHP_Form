@@ -4,7 +4,7 @@ require_once 'db_connect.php';
 class User extends DBConnect
 {
   const FORM_FIELDS = ['username', 'email', 'password', 'password_confirmation'];
-	private $username;
+  private $username;
   private $email;
   private $password;
 
@@ -32,11 +32,11 @@ class User extends DBConnect
     return $this->password;
   }
 
-  public function validate($params){
+  public function validate($params, $fields){
     $error = false;
     $exception = [];
 
-    foreach (self::FORM_FIELDS as $field){
+    foreach ($fields as $field){
       if(empty($params[$field])){
         $exception[] = "Please fill in your $field.";
         $error = true;
@@ -57,7 +57,7 @@ class User extends DBConnect
   }
 
   private function save(){
-    $query = "INSERT INTO user(username, email, password) VALUES (:username, :email, :password)";
+    $query = "INSERT INTO users(username, email, password) VALUES (:username, :email, :password)";
     $parameters = array(
       'username' => $this->getUsername(),
       'email'    => $this->getEmail(),
@@ -67,8 +67,7 @@ class User extends DBConnect
   }
 
   public function __construct($params){
-    parent::__construct();
-    $this->validate($params);
+    $this->validate($params, self::FORM_FIELDS);
     $this->setUsername($params['username']);
     $this->setEmail($params['email']);
     $this->setPassword($params['password']);
