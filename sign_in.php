@@ -5,7 +5,8 @@ const FORM_FIELDS = ['email', 'password'];
 if(isset($_POST['sign_in'])){
   try{
     validate($_POST, FORM_FIELDS);
-    $user = login($_POST);
+    $temp_user = new User($_POST);
+    $user = login($temp_user);
     echo "Welcome ".$user->getUsername();
   }
   catch(Exception $e){
@@ -30,9 +31,8 @@ function validate($params, $fields){
   }
 }
 
-function login($params){
-  $password = sha1($params['password']);
-  $result = User::findOneBy(['email' => $_POST['email'], 'password' => $password]);
+function login($user){
+  $result = User::findOneBy(['email' => $user->getEmail(), 'password' => $user->getPassword()]);
 
   if($result === NULL){
     throw new Exception("Sorry, wrong email or password.");

@@ -32,12 +32,6 @@ class DBConnect {
     self::insert($query);
   }
 
-  private static function insert(string $query){
-    self::connect();
-    $insert = self::$connection->prepare($query);
-    $insert->execute();
-  }
-
   public static function findAll(){
     $calling_class = get_called_class();
     $table = strtolower($calling_class).'s';
@@ -70,6 +64,12 @@ class DBConnect {
     return $select->fetchAll();
   }
 
+  private static function insert(string $query){
+    self::connect();
+    $insert = self::$connection->prepare($query);
+    $insert->execute();
+  }
+  
   private static function parseParameters(array $parameters){
     $output = implode(' AND ', array_map(
       function ($v, $k) { return sprintf("%s='%s'", $k, $v); },

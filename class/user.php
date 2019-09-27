@@ -16,7 +16,7 @@ class User extends DBConnect
   }
 
   public function setPassword($password){
-    $this->password = $password;
+    $this->password = sha1($password);
   }
 
   public function getUsername(){
@@ -32,7 +32,6 @@ class User extends DBConnect
   }
 
   public function save(){
-    $this->setPassword(sha1($this->getPassword()));
     $this->persist(get_object_vars($this));
   }
 
