@@ -3,7 +3,6 @@ require_once 'db_connect.php';
 
 class User extends DBConnect
 {
-  const FORM_FIELDS = ['username', 'email', 'password', 'password_confirmation'];
   private $username;
   private $email;
   private $password;
@@ -17,7 +16,7 @@ class User extends DBConnect
   }
 
   public function setPassword($password){
-    $this->password = sha1($password);
+    $this->password = $password;
   }
 
   public function getUsername(){
@@ -32,63 +31,12 @@ class User extends DBConnect
     return $this->password;
   }
 
-  public function validate($params, $fields){
-    $error = false;
-    $exception = [];
-
-    foreach ($fields as $field){
-      if(empty($params[$field])){
-        $exception[] = "Please fill in your $field.";
-        $error = true;
-      }
-    }
-
-    if(!filter_var($params['email'], FILTER_VALIDATE_EMAIL)){
-      $exception[] = "Please fill in a valid email address.";
-    } 
-
-    if($params['password'] !== $params['password_confirmation']){
-      $exception[] = "Your password and the password confirmation doesn't match.";
-    }
-
-    if($error){
-      throw new Exception(implode("<br>", $exception));
-    }
-  }
-
-  public static function connect($params){
-    $error = false;
-    $exception = [];
-
-    if(empty($params['email'])){
-      $exception[] = "Please fill in your email."; 
-    }
-
-    if(empty($params['password'])){
-      $exception[] = "Please fill in your password."; 
-    }
-
-    if($error){
-      throw new Exception(implode("<br>", $exception));
-    }
-
-    $password = sha1($params['password']);
-
-    $query = "SELECT * FROM users WHERE password = :password AND email = :email";
-    $parameters = array(
-      'email'    => $params['email'],
-      'password' => $password
-    );
-
-    self::query($query, $parameters);
-  }
-
   public function save(){
+    $this->setPassword(sha1($this->getPassword()));
     $this->persist(get_object_vars($this));
   }
 
   public function __construct($params){
-    $this->validate($params, self::FORM_FIELDS);
     $this->setUsername($params['username']);
     $this->setEmail($params['email']);
     $this->setPassword($params['password']);

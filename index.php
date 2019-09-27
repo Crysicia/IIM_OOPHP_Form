@@ -17,7 +17,7 @@
 				<input type="password" name="password" value="">
 				<label>Confirm Password</label>
 				<input type="password" name="password_confirmation" value="">
-				<input type="submit" value="Submit">
+				<input type="submit" name="sign_up" value="Submit">
 			</form>
 
 			<h2>Sign In</h2>
@@ -27,7 +27,7 @@
 				<input type="email" name="email" value="">
 				<label>Password</label>
 				<input type="password" name="password" value="">
-				<input type="submit" value="Submit">
+				<input type="submit" name="sign_in" value="Submit">
 			</form>
 		</div>
 	</body>

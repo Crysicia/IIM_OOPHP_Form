@@ -71,7 +71,7 @@ class DBConnect {
   }
 
   private static function parseParameters(array $parameters){
-    $output = implode(', ', array_map(
+    $output = implode(' AND ', array_map(
       function ($v, $k) { return sprintf("%s='%s'", $k, $v); },
       $parameters,
       array_keys($parameters)
