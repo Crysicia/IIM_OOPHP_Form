@@ -18,9 +18,24 @@ class DBConnect {
     }
   }
 
-  public function query(string $query, array $parameters){
-    $insert = $this->connection->prepare($query);
-    $insert->execute($parameters);
+  protected function persist(array $parameters){
+    $calling_class = get_called_class();
+    $table = strtolower($calling_class).'s';
+
+    $columns = implode(', ', array_keys($parameters));
+    $values = implode(', ', array_map(
+      function ($v) { return "'$v'"; },
+      array_values($parameters)
+    ));
+
+    $query = "INSERT INTO $table ($columns) VALUES ($values)";
+    self::insert($query);
+  }
+
+  private static function insert(string $query){
+    self::connect();
+    $insert = self::$connection->prepare($query);
+    $insert->execute();
   }
 
   public static function findAll(){

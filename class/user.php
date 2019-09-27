@@ -56,14 +56,35 @@ class User extends DBConnect
     }
   }
 
-  private function save(){
-    $query = "INSERT INTO users(username, email, password) VALUES (:username, :email, :password)";
+  public static function connect($params){
+    $error = false;
+    $exception = [];
+
+    if(empty($params['email'])){
+      $exception[] = "Please fill in your email."; 
+    }
+
+    if(empty($params['password'])){
+      $exception[] = "Please fill in your password."; 
+    }
+
+    if($error){
+      throw new Exception(implode("<br>", $exception));
+    }
+
+    $password = sha1($params['password']);
+
+    $query = "SELECT * FROM users WHERE password = :password AND email = :email";
     $parameters = array(
-      'username' => $this->getUsername(),
-      'email'    => $this->getEmail(),
-      'password' => $this->getPassword()
+      'email'    => $params['email'],
+      'password' => $password
     );
-    $this->query($query, $parameters);
+
+    self::query($query, $parameters);
+  }
+
+  public function save(){
+    $this->persist(get_object_vars($this));
   }
 
   public function __construct($params){
@@ -71,6 +92,5 @@ class User extends DBConnect
     $this->setUsername($params['username']);
     $this->setEmail($params['email']);
     $this->setPassword($params['password']);
-    $this->save();
   }
 }
